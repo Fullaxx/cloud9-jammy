@@ -1,0 +1,36 @@
+# ------------------------------------------------------------------------------
+# Pull base image
+FROM fullaxx/cloud9-jammy
+MAINTAINER Brett Kuskie <fullaxx@gmail.com>
+
+# ------------------------------------------------------------------------------
+# Set environment variables
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG C
+
+# ------------------------------------------------------------------------------
+# Install development libraries and tools clean up
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	  apcalc astyle bash-completion cgdb cmake dos2unix file less \
+	  libcurl4-gnutls-dev libevent-dev libgcrypt-dev libhiredis-dev \
+	  libmicrohttpd-dev libpcap-dev libsqlite3-dev libssl-dev \
+	  libwebsockets-dev libxml2-dev libzmq3-dev \
+	  lsof most nano net-tools openssh-client psmisc sshfs tree xxd xxhash && \
+	apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
+
+# ------------------------------------------------------------------------------
+# Add app.sh
+COPY app.sh /app/
+
+# ------------------------------------------------------------------------------
+# Add volumes
+VOLUME /log
+VOLUME /c9ws
+
+# ------------------------------------------------------------------------------
+# Expose ports
+EXPOSE 80
+
+# ------------------------------------------------------------------------------
+# Define default command
+CMD ["/app/app.sh"]
